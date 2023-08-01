@@ -1,0 +1,20 @@
+/* .testeDiv {
+    margin-right: 10px;
+} */
+
+.minHeight {
+    min-width: 100px;
+}
+
+
+.btn-min-width {
+    min-width: 80px;
+}
+
+.todo-min-width {
+    min-width: 610px;
+}
+
+.color1 {
+    background-color:#0C0C0C0C;
+}

@@ -7,30 +7,28 @@ import './index.css';
 
 const router = createBrowserRouter([
     {
-        path: '/',
+        path: '/project',
         element: <Navbar/>,
         children: [
             {
-                path: "todo/:id",
+                path: "/project/todo/:id",
                 element: <Todo />,
             },
             {
-                path: '/table',
+                path: '/project/table',
                 element: <Table/>
             }
         ]
     },
     {
-        path: '/login',
-        element: <LoginPage/>
+        path: '/',
+        element: <LoginPage/>,
     },
 ]);
 
 function App() {
     return (
-        //<div className='t-body'>
-            <RouterProvider router={router}> </RouterProvider>
-        //</div>
+        <RouterProvider router={router}> </RouterProvider>
     );
 }
 

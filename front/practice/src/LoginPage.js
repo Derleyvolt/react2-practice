@@ -1,13 +1,33 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import axiosInstance from './config/axiosConfig';
 
-function LoginPage(props) {
+const LoginPage = function() {
     const navigate = useNavigate();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
 
-    function navToMainPage() {
-        console.log('test');
-        navigate('/table');
+    const doLogin = async function() {
+        const data = {
+            username: username,
+            password: password,
+            email: "someEmail@example.com",
+        };
+
+        await axiosInstance.post('/auth/login', JSON.stringify(data)).then(res => {
+            //navigate('/project/table');
+        }).catch(err => {
+            alert('Some error occurred.');
+        });
+    }
+
+    const loginInput = function(e) {
+        setUsername(e.target.value);
+    }
+
+    const passwordInput = function(e) {
+        setPassword(e.target.value);
     }
 
     return (
@@ -20,14 +40,14 @@ function LoginPage(props) {
 
                     <div className='card-body col-12'>
                         <label className="form-label text-dark"> Username </label>
-                        <input className="form-control" type='text'/>
+                        <input className="form-control" type='text' onChange={loginInput}/>
 
                         <label className="form-label mt-3 text-dark"> Password </label>
-                        <input className="form-control" type='text'/>
+                        <input className="form-control" type='text' onChange={passwordInput}/>
 
                         <div className="row">
                             <div className="col-12">
-                                <button onClick={navToMainPage} class='btn btn-primary mt-3 float-right .ml-1 w-100'> Entrar </button>
+                                <button onClick={doLogin} class='btn btn-primary mt-3 float-right .ml-1 w-100'> Entrar </button>
                             </div>
                         </div>
                     </div>

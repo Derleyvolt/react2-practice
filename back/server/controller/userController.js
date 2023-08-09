@@ -1,17 +1,24 @@
-let userList = [];
+const user = require('../model/userModel');
 
-const createAccount = function(username, password, email) {
-    for(user of userList) {
-        if(user.username === username) {
-            return false;
-        }
-    }
+let userList = [{username: 'derley', password: '123'},
+];
 
-    userList.push({username, password, email});
-    return true;
+const createAccount = async function(username, password, email) {
+    console.log('test');
+    return await user.createUser(username, password, email);
+}
+
+const getUser = async function(userId) {
+    return await user.getUser(userId);
+}
+
+const getListUser = async function() {
+    return await user.getListUser();
 }
 
 module.exports = {
     userList,
     createAccount,
+    getUser,
+    getListUser
 }

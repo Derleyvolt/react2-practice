@@ -1,21 +1,33 @@
 const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
-const { userList } = require('userController')
+const { userList } = require('./userController')
+const user         = require('../model/userModel')
 
-dotenv.config();
+const generateAccessToken = function(username, role, seconds) {
+    const payload = {
+        username,
+        role,
+    };
 
-const generateAccessToken = function(username) {
-    return jwt.sign(username, process.env.TOKEN_SECRET, { expiresIn: '1800s' });
+    return jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: `${seconds}s` });
 }
 
 async function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
 
-    if (token == null) return res.sendStatus(401)
+    if (token == null) {
+        return res.sendStatus(401)
+    }
 
     try {
-        await jwt.verify(token, process.env.TOKEN_SECRET);
+        const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+        console.log(decoded);
+        const { username, password, role } = decoded;
+        res.cookie('Authorization', 
+                    generateAccessToken(username, password, role), {
+                        sameSite: 'None',  // Cookie será enviado em solicitações cross-site
+                        secure: false       // Cookie será enviado somente em conexões HTTPS
+        });
         next();
     } catch (err) {
         res.sendStatus(403);
@@ -23,13 +35,13 @@ async function authenticateToken(req, res, next) {
 }
 
 const login = function(username, password) {
-    for(user of userList) {
-        if(user.username === username && user.password === password) {
-            return true;
-        }
+    const user = user.getUserFromUsername(username);
+    
+    if (user.password == password) {
+        return true;
     }
 
-    return true;
+    return false;
 }
 
 const logout = function(req, res) {
